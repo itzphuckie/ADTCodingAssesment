@@ -20,19 +20,15 @@ class MainViewModel:ViewModel(){
     val liveArticleList :LiveData<List<Article?>?> = muArticleList
     val liveError :LiveData<String> = muError
 
-    init {
-        makeRetrofitCall()
-    }
-
     /**
      * describe making the API call and provide article data to the screen
      * @params N/A
      */
-    private fun makeRetrofitCall() {
+     fun makeRetrofitCall(isConnected: Boolean) {
         job = CoroutineScope(Dispatchers.IO).launch {
             try{
                 withContext(Dispatchers.Main){
-                    muArticleList.value = mainRepository.getCachedReponse()
+                    muArticleList.value = mainRepository.getCachedReponse(isConnected)
                     Log.d("PostData",muArticleList.value.toString())
                 }
             }

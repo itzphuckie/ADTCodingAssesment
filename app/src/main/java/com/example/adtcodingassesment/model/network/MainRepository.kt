@@ -1,7 +1,7 @@
 package com.example.adtcodingassesment.model.network
 
-
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.example.adtcodingassesment.model.data.Article
 import com.example.adtcodingassesment.model.database.AppDatabase
@@ -21,6 +21,7 @@ class MainRepository{
     suspend fun getNewsResponse(){
         var list = client.getBody().body()?.articles
         postCachedReponse(list)
+        Log.d("getNews",list.toString())
     }
 
     /**
@@ -28,14 +29,18 @@ class MainRepository{
      * @params N/A
      *
      */
-    suspend fun getCachedReponse():List<Article?>?{
+    suspend fun getCachedReponse(isConnected: Boolean):List<Article?>?{
         var myDB = context?.let {
-            Room.databaseBuilder(it,AppDatabase::class.java,"articleDB")
+            Room.databaseBuilder(it,AppDatabase::class.java,"articleDatabase")
                 .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
                 .build()
         }
-        if(!myDB?.myDao()?.getAllArticles().isNullOrEmpty()){
-            myDB?.myDao()?.deleteArticles()
+        if (isConnected){
+            if(!myDB?.myDao()?.getAllArticles().isNullOrEmpty()){
+                myDB?.myDao()?.deleteArticles()
+            }
+            getNewsResponse()
         }
         getNewsResponse()
         return myDB?.myDao()?.getAllArticles()
@@ -48,8 +53,9 @@ class MainRepository{
      */
     fun postCachedReponse(articleList: List<Article?>?){
         var myDB = context?.let {
-            Room.databaseBuilder(it, AppDatabase::class.java,"articleDB")
+            Room.databaseBuilder(it, AppDatabase::class.java,"articleDatabase")
                 .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
                 .build()
         }
         for (element in articleList!!){

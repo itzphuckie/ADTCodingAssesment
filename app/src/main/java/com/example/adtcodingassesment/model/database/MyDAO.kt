@@ -8,7 +8,7 @@ import com.example.adtcodingassesment.model.data.Article
 @Dao
 interface MyDAO{
     @Insert
-    fun addArticle(articleList: Article?)
+    fun addArticle(article: Article?)
 
     @Query("SELECT * from article_table")
     fun getAllArticles():List<Article?>?

@@ -33,7 +33,7 @@ class NewsAdapter(var muArticleList:MutableList<Article?>?,var mContext:Context)
         fun onBind(article: Article?){
             articleHealine.text = article?.title
             Glide.with(mContext).load(article?.urlToImage)
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.no_image_placeholder)
                 .into(articleImage)
         }
     }
