@@ -24,14 +24,13 @@ class NewsAdapter(var muArticleList:MutableList<Article?>?,var mContext:Context)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var mArticle = muArticleList?.get(position)
-        holder.onBind(mArticle,mContext)
+        holder.onBind(mArticle)
     }
 
     inner class ViewHolder(view: View):RecyclerView.ViewHolder(view){
-        // Get view reference
         val articleHealine = view.findViewById<TextView>(R.id.tv_headline)
         val articleImage = view.findViewById<ImageView>(R.id.img_healine)
-        fun onBind(article: Article?,context: Context){
+        fun onBind(article: Article?){
             articleHealine.text = article?.title
             Glide.with(mContext).load(article?.urlToImage)
                 .placeholder(R.drawable.ic_launcher_background)

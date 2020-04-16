@@ -1,4 +1,6 @@
 package com.example.adtcodingassesment.viewmodel
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import kotlinx.coroutines.*
 
 
 class MainViewModel:ViewModel(){
+
     private val mainRepository = MainRepository()
     private val muArticleList = MutableLiveData<List<Article?>?>()
     private val muError = MutableLiveData<String>()
@@ -21,19 +24,16 @@ class MainViewModel:ViewModel(){
         makeRetrofitCall()
     }
 
+    /**
+     * describe making the API call and provide article data to the screen
+     * @params N/A
+     */
     private fun makeRetrofitCall() {
         job = CoroutineScope(Dispatchers.IO).launch {
             try{
-                val newsReponse = mainRepository.getNewsResponse()
                 withContext(Dispatchers.Main){
-                    when(newsReponse.isSuccessful){
-                        true ->{
-                            muArticleList.value = newsReponse.body()?.articles
-                        }
-                        false ->{
-                            muError.value = newsReponse.errorBody().toString()
-                        }
-                    }
+                    muArticleList.value = mainRepository.getCachedReponse()
+                    Log.d("PostData",muArticleList.value.toString())
                 }
             }
             catch(exception: Exception){
